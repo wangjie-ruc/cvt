@@ -202,3 +202,23 @@ class RandomBright(Transform):
 
     def apply_mask(self, mask, scale):
         return mask
+
+class RandomGamma(Transform):
+    def __init__(self, scale, gain=1):
+        if isinstance(scale, numbers.Number):
+            scale = (1-scale, 1+scale)
+        self.scale = scale
+        self.gain = gain
+
+    def __call__(self, data):
+        scale = random.uniform(*self.scale)
+        for k,v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        return data
+
+    def apply_image(self, img, scale):
+        return F.adjust_brightness(img, scale, self.gain)
+
+    def apply_mask(self, mask, scale):
+        return mask

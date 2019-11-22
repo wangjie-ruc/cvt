@@ -42,3 +42,12 @@ def adjust_brightness(img, scale):
     enhancer = ImageEnhance.Brightness(img)
     img = enhancer.enhance(scale)
     return img
+
+def adjust_gamma(img, gamma, gain=1):
+    input_mode = img.mode
+    img = img.convert('RGB')
+
+    gamma_map = [255 * gain * pow(ele / 255., gamma) for ele in range(256)] * 3
+    img = img.point(gamma_map) 
+    img = img.convert(input_mode)
+    return img
