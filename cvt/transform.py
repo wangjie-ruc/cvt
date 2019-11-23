@@ -9,11 +9,13 @@ from . import functional as F
 
 
 class Sequence:
-    def __init__(self):
-        pass
+    def __init__(self, transforms):
+        self.transforms = transforms
 
     def __call__(self, data):
-        pass
+        for t in self.transforms:
+            data = t(data)
+        return data
 
 
 class Shuffle:
