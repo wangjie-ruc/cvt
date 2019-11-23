@@ -4,9 +4,31 @@ import random
 from abc import ABCMeta, abstractmethod
 from functools import partial
 from typing import List
-from collections import Sequence, Iterable
+from collections import Iterable
 from . import functional as F
 
+
+class Sequence:
+    def __init__(self):
+        pass
+
+    def __call__(self, data):
+        pass
+
+
+class Shuffle:
+    def __init__(self):
+        pass
+
+    def __call__(self, data):
+        pass
+
+class Sample:
+    def __init__(self):
+        pass
+
+    def __call__(self, data):
+        pass
 
 class Transform(metaclass=ABCMeta):
     @abstractmethod
@@ -21,6 +43,7 @@ class Transform(metaclass=ABCMeta):
 
     def apply_kp(self, kp):
         raise NotImplementedError
+
 
 
 class RandomHorizontalFlip(Transform):
