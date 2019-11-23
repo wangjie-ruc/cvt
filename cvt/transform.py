@@ -2,9 +2,10 @@ import math
 import numbers
 import random
 from abc import ABCMeta, abstractmethod
+from collections import Iterable
 from functools import partial
 from typing import List
-from collections import Iterable
+
 from . import functional as F
 
 
@@ -28,6 +29,7 @@ class Shuffle:
             data = t(data)
         return data
 
+
 class Sample:
     def __init__(self, transforms, k=1):
         self.transforms = transforms
@@ -38,6 +40,7 @@ class Sample:
         for t in transforms:
             data = t(data)
         return data
+
 
 class Transform(metaclass=ABCMeta):
     @abstractmethod
@@ -54,6 +57,17 @@ class Transform(metaclass=ABCMeta):
         raise NotImplementedError
 
 
+class ToTensor(Transform):
+    def __call__(self, data):
+        return data
+
+    def apply_image(self, img):
+        return F.to_tensor(img)
+
+    def apply_mask(self, mask):
+        if isinstance(mask, List):
+            return torch.stach([F.to_tensor(m) for m in mask])
+        return F.to_tensor(mask)
 
 class RandomHorizontalFlip(Transform):
     def __init__(self, p=0.5):
@@ -224,7 +238,7 @@ class RandomBright(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k,v in data.items():
+        for k, v in data.items():
             if v is not None:
                 data[k] = getattr(self, f'apply_{k}')(v, scale)
         return data
@@ -236,7 +250,6 @@ class RandomBright(Transform):
         return mask
 
 
-
 class RandomContrast(Transform):
     def __init__(self, scale):
         if isinstance(scale, numbers.Number):
@@ -245,7 +258,7 @@ class RandomContrast(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k,v in data.items():
+        for k, v in data.items():
             if v is not None:
                 data[k] = getattr(self, f'apply_{k}')(v, scale)
         return data
@@ -257,7 +270,6 @@ class RandomContrast(Transform):
         return mask
 
 
-
 class RandomSaturation(Transform):
     def __init__(self, scale):
         if isinstance(scale, numbers.Number):
@@ -266,7 +278,7 @@ class RandomSaturation(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k,v in data.items():
+        for k, v in data.items():
             if v is not None:
                 data[k] = getattr(self, f'apply_{k}')(v, scale)
         return data
@@ -277,6 +289,7 @@ class RandomSaturation(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+
 class RandomHue(Transform):
     def __init__(self, scale):
         if isinstance(scale, numbers.Number):
@@ -286,7 +299,7 @@ class RandomHue(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k,v in data.items():
+        for k, v in data.items():
             if v is not None:
                 data[k] = getattr(self, f'apply_{k}')(v, scale)
         return data
@@ -297,6 +310,7 @@ class RandomHue(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+
 class RandomGamma(Transform):
     def __init__(self, scale, gain=1):
         if isinstance(scale, numbers.Number):
@@ -306,7 +320,7 @@ class RandomGamma(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k,v in data.items():
+        for k, v in data.items():
             if v is not None:
                 data[k] = getattr(self, f'apply_{k}')(v, scale)
         return data
