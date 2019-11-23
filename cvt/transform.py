@@ -29,11 +29,15 @@ class Shuffle:
         return data
 
 class Sample:
-    def __init__(self):
-        pass
+    def __init__(self, transforms, k=1):
+        self.transforms = transforms
+        self.k = k
 
     def __call__(self, data):
-        pass
+        transforms = random.sample(self.transforms, k=self.k)
+        for t in transforms:
+            data = t(data)
+        return data
 
 class Transform(metaclass=ABCMeta):
     @abstractmethod
