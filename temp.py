@@ -27,9 +27,21 @@ def to_gray(img, keep_dim=False):
         return cv.merge([gray] * 3)
     return gray
 
-def adjust_contrast_np(img, scale):
+def adjust_saturation_np(img, scale):
     gray = to_gray(img, keep_dim=True)
     img = np.int32(img)
+    img = img * scale + gray * (1.0 - scale) 
+    np.clip(img, 0, 255, out=img)
+    return np.uint8(img)
+
+def adjust_saturation_pil(img, scale):
+    enhancer = ImageEnhance.Color(img)
+    img = enhancer.enhance(scale)
+    return img
+
+def adjust_contrast_np(img, scale):
+    mean = round(to_gray(img).mean())
+    gray = np.ones_like(img, dtype=np.uint8) * int(mean)
     img = img * scale + gray * (1.0 - scale) 
     np.clip(img, 0, 255, out=img)
     return np.uint8(img)
@@ -40,7 +52,7 @@ def adjust_contrast_pil(img, scale):
     img = enhancer.enhance(scale)
     return img
 
-img_np = adjust_contrast_np(img, scale)
-img_pil = adjust_contrast_pil(Image.fromarray(img), scale)
+img_np = adjust_saturation_np(img, scale)
+img_pil = adjust_saturation_pil(Image.fromarray(img), scale)
 print(img_np.mean())
 print(np.array(img_pil).mean())

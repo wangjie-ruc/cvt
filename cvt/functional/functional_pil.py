@@ -48,6 +48,11 @@ def adjust_contrast(img, scale):
     img = enhancer.enhance(scale)
     return img
 
+def adjust_saturation(img, scale):
+    enhancer = ImageEnhance.Color(img)
+    img = enhancer.enhance(scale)
+    return img
+
 def adjust_gamma(img, gamma, gain=1):
     input_mode = img.mode
     img = img.convert('RGB')

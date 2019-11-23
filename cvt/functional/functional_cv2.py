@@ -97,12 +97,19 @@ def to_gray(img, keep_dim=False):
         return cv.merge([gray] * 3)
     return gray
 
-def adjust_contrast(img, scale):
+def adjust_saturation(img, scale):
     gray = to_gray(img, keep_dim=True)
-    return np.uint8(img * scale + gray * (1-scale))
+    img = np.int32(img)
+    img = img * scale + gray * (1.0 - scale) 
+    np.clip(img, 0, 255, out=img)
+    return np.uint8(img)
 
-def adjust_saturation(img):
-    pass
+def adjust_contrast(img, scale):
+    mean = round(to_gray(img).mean())
+    gray = np.ones_like(img, dtype=np.uint8) * int(mean)
+    img = img * scale + gray * (1.0 - scale) 
+    np.clip(img, 0, 255, out=img)
+    return np.uint8(img)
 
 
 def adjust_hue(img):

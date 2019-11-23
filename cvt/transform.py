@@ -224,6 +224,28 @@ class RandomContrast(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+
+
+class RandomSaturation(Transform):
+    def __init__(self, scale):
+        if isinstance(scale, numbers.Number):
+            scale = (1-scale, 1+scale)
+        self.scale = scale
+
+    def __call__(self, data):
+        scale = random.uniform(*self.scale)
+        for k,v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        return data
+
+    def apply_image(self, img, scale):
+        return F.adjust_saturation(img, scale)
+
+    def apply_mask(self, mask, scale):
+        return mask
+
+
 class RandomGamma(Transform):
     def __init__(self, scale, gain=1):
         if isinstance(scale, numbers.Number):
