@@ -245,6 +245,25 @@ class RandomSaturation(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+class RandomHue(Transform):
+    def __init__(self, scale):
+        if isinstance(scale, numbers.Number):
+            assert abs(scale) <= 0.5
+            scale = (-scale, scale)
+        self.scale = scale
+
+    def __call__(self, data):
+        scale = random.uniform(*self.scale)
+        for k,v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        return data
+
+    def apply_image(self, img, scale):
+        return F.adjust_hue(img, scale)
+
+    def apply_mask(self, mask, scale):
+        return mask
 
 class RandomGamma(Transform):
     def __init__(self, scale, gain=1):

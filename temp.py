@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 img  = cv.imread('001.jpg')
 # img = np.random.randint(0, 255, size=(256, 256, 3), dtype=np.uint8)
-scale = 1.5
+scale = 0.5
 
 def adjust_brightness_np(img, scale):
     img = img * scale
@@ -52,7 +52,47 @@ def adjust_contrast_pil(img, scale):
     img = enhancer.enhance(scale)
     return img
 
-img_np = adjust_saturation_np(img, scale)
-img_pil = adjust_saturation_pil(Image.fromarray(img), scale)
+
+def adjust_hue_np(img, scale):
+
+    if not(-0.5 <= scale <= 0.5):
+        raise ValueError('hue_factor is not in [-0.5, 0.5].'.format(scale))
+    img = cv.cvtColor(img, cv.COLOR_RGB2HSV)
+    h, s, v = cv.split(img)
+
+    h = np.int32(h)
+    h = np.uint8((h + (scale * 180) % 181) % 181)
+
+    img = cv.merge([h, s, v])
+    img = cv.cvtColor(img, cv.COLOR_HSV2RGB)
+    return img
+
+def adjust_hue_pil(img, scale):
+
+    if not(-0.5 <= scale <= 0.5):
+        raise ValueError('scale is not in [-0.5, 0.5].'.format(scale))
+
+    input_mode = img.mode
+    if input_mode in {'L', '1', 'I', 'F'}:
+        return img
+
+    h, s, v = img.convert('HSV').split()
+
+    np_h = np.array(h, dtype=np.uint8)
+    # uint8 addition take cares of rotation across boundaries
+    with np.errstate(over='ignore'):
+        np_h += np.uint8(scale * 255)
+    h = Image.fromarray(np_h, 'L')
+
+    img = Image.merge('HSV', (h, s, v)).convert(input_mode)
+    return img
+
+img_hsv = cv.cvtColor(img, cv.COLOR_RGB2HSV)
+img_pil_hsv = np.array(Image.fromarray(img).convert('HSV'))
+print(img_hsv[:,:,0].max())
+print(img_pil_hsv[:,:,0].max())
+
+img_np = adjust_hue_np(img, scale)
+img_pil = adjust_hue_pil(Image.fromarray(img), scale)
 print(img_np.mean())
 print(np.array(img_pil).mean())

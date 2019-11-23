@@ -111,9 +111,19 @@ def adjust_contrast(img, scale):
     np.clip(img, 0, 255, out=img)
     return np.uint8(img)
 
+def adjust_hue(img, scale):
 
-def adjust_hue(img):
-    pass
+    if not(-0.5 <= scale <= 0.5):
+        raise ValueError('hue_factor is not in [-0.5, 0.5].'.format(scale))
+    img = cv.cvtColor(img, cv.COLOR_RGB2HSV)
+    h, s, v = cv.split(img)
+
+    h = np.int32(h)
+    h = np.uint8((h + (scale * 180) % 181) % 181)
+
+    img = cv.merge([h, s, v])
+    img = cv.cvtColor(img, cv.COLOR_HSV2RGB)
+    return img
 
 
 def is_gray(img):

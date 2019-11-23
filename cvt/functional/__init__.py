@@ -80,5 +80,8 @@ def adjust_contrast(img, scale):
 def adjust_saturation(img, scale):
     return call_by_name('adjust_saturation', img, scale)
 
+def adjust_hue(img, scale):
+    return call_by_name('adjust_hue', img, scale)
+
 def adjust_gamma(img, gamma, gain):
     return call_by_name('adjust_gamma', img, gamma, gain)

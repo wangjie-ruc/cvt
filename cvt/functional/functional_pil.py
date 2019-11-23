@@ -53,6 +53,28 @@ def adjust_saturation(img, scale):
     img = enhancer.enhance(scale)
     return img
 
+
+def adjust_hue(img, scale):
+
+    if not(-0.5 <= scale <= 0.5):
+        raise ValueError('hue_factor is not in [-0.5, 0.5].'.format(scale))
+
+    input_mode = img.mode
+    if input_mode in {'L', '1', 'I', 'F'}:
+        return img
+
+    h, s, v = img.convert('HSV').split()
+
+    np_h = np.array(h, dtype=np.uint8)
+    # uint8 addition take cares of rotation across boundaries
+    with np.errstate(over='ignore'):
+        np_h += np.uint8(scale * 255)
+    h = Image.fromarray(np_h, 'L')
+
+    img = Image.merge('HSV', (h, s, v)).convert(input_mode)
+    return img
+
+
 def adjust_gamma(img, gamma, gain=1):
     input_mode = img.mode
     img = img.convert('RGB')
