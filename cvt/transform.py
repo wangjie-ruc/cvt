@@ -19,11 +19,14 @@ class Sequence:
 
 
 class Shuffle:
-    def __init__(self):
-        pass
+    def __init__(self, transforms):
+        self.transforms = transforms
 
     def __call__(self, data):
-        pass
+        random.shuffle(self.transforms)
+        for t in self.transforms:
+            data = t(data)
+        return data
 
 class Sample:
     def __init__(self):
