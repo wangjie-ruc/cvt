@@ -1,6 +1,6 @@
 # CVT 
 
-CV transforms used in deep learning training.
+Image transforms used in deep learning training.
 
 # functions
 
