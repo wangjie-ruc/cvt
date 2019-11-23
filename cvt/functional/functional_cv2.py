@@ -90,6 +90,24 @@ def adjust_gamma(img, gamma, gain=1):
     cv.LUT(img, gamma_map, img)
     return img
 
+def to_gray(img, keep_dim=False):
+    r, g, b = cv.split(img)
+    gray = r * 299/1000 + g * 587/1000 + b * 114/1000
+    if keep_dim:
+        return cv.merge([gray] * 3)
+    return gray
+
+def adjust_contrast(img, scale):
+    gray = to_gray(img, keep_dim=True)
+    return np.uint8(img * scale + gray * (1-scale))
+
+def adjust_saturation(img):
+    pass
+
+
+def adjust_hue(img):
+    pass
+
 
 def is_gray(img):
     if img.ndim == 2 or img.shape[-1] == 1:

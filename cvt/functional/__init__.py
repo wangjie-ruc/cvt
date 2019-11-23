@@ -74,5 +74,8 @@ def resized_crop(img, i, j, h, w, size, interpolation):
 def adjust_brightness(img, scale):
     return call_by_name('adjust_brightness', img, scale)
 
+def adjust_contrast(img, scale):
+    return call_by_name('adjust_contrast', img, scale)
+
 def adjust_gamma(img, gamma, gain):
     return call_by_name('adjust_gamma', img, gamma, gain)
