@@ -1,0 +1,8 @@
+{
+    "bright": {"scale": 0.1},
+    "contrast": {"scale": 0.1},
+    "hue": {"scale": 0.1},
+    "vflip": {},
+    "hflip": {},
+    "rotate": {"degree": 30}
+}
