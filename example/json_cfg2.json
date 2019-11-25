@@ -4,5 +4,5 @@
     "hue": {"scale": 0.1},
     "vflip": {},
     "hflip": {},
-    "rotate": {"degree": 30}
+    "rotate": {"degrees": 30}
 }

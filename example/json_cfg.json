@@ -1,14 +1,14 @@
 {
-    "seqence":[
-        {"sample": [
-            {"bright": {"scale": 0.1}},
-            {"contrast": {"scale": 0.1}},
-            {"hue": {"scale": 0.1}}
-        ]},
-        {"shuffle": [
-            {"vflip": {}},
-            {"hflip": {}},
-            {"rotate": {"degree": 30}}
-        ]}
-    ]
+    "sequence":{
+        "sample": {
+            "bright": {"scale": 0.1},
+            "contrast": {"scale": 0.1},
+            "hue": {"scale": 0.1}
+        },
+        "shuffle": {
+            "vflip": {},
+            "hflip": {},
+            "rotate": {"degrees": 30}
+        }
+    }
 }

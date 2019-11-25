@@ -11,16 +11,27 @@ from . import functional as F
 
 class Sequence:
     def __init__(self, transforms):
+        if not isinstance(transforms, List):
+            transforms = [transforms]
         self.transforms = transforms
 
     def __call__(self, data):
         for t in self.transforms:
             data = t(data)
         return data
-
+    
+    def __repr__(self):
+        format_string = self.__class__.__name__ + '('
+        for t in self.transforms:
+            format_string += '\n'
+            format_string += '    {0}'.format(t)
+        format_string += '\n)'
+        return format_string
 
 class Shuffle:
     def __init__(self, transforms):
+        if not isinstance(transforms, List):
+            transforms = [transforms]
         self.transforms = transforms
 
     def __call__(self, data):
@@ -29,9 +40,19 @@ class Shuffle:
             data = t(data)
         return data
 
+    def __repr__(self):
+        format_string = self.__class__.__name__ + '('
+        for t in self.transforms:
+            format_string += '\n'
+            format_string += '    {0}'.format(t)
+        format_string += '\n)'
+        return format_string
 
 class Sample:
     def __init__(self, transforms, k=1):
+        if not isinstance(transforms, List):
+            transforms = [transforms]
+        assert len(transforms) >= k
         self.transforms = transforms
         self.k = k
 
@@ -41,6 +62,13 @@ class Sample:
             data = t(data)
         return data
 
+    def __repr__(self):
+        format_string = self.__class__.__name__ + '('
+        for t in self.transforms:
+            format_string += '\n'
+            format_string += '    {0}'.format(t)
+        format_string += '\n)'
+        return format_string
 
 class Transform(metaclass=ABCMeta):
     @abstractmethod
@@ -56,6 +84,9 @@ class Transform(metaclass=ABCMeta):
     def apply_kp(self, kp):
         raise NotImplementedError
 
+    def __repr__(self):
+        format_string = self.__class__.__name__
+        return format_string
 
 class ToTensor(Transform):
     def __call__(self, data):
