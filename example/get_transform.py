@@ -7,3 +7,10 @@ tfms = Sequence([
     Shuffle([RandomHorizontalFlip(), RandomVerticalFlip(), RandomRotation(30)])
 ])
 
+import cv2 as cv 
+img = cv.imread('test/assets/001.jpg')[:,:,[2,1,0]]
+data = {'image':img}
+data = tfms(data)
+import matplotlib.pyplot as plt
+plt.imshow(data['image'])
+plt.show()

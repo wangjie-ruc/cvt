@@ -69,6 +69,7 @@ class ToTensor(Transform):
             return torch.stach([F.to_tensor(m) for m in mask])
         return F.to_tensor(mask)
 
+
 class RandomHorizontalFlip(Transform):
     def __init__(self, p=0.5):
         self.p = p

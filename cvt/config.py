@@ -1,19 +1,15 @@
 
+def from_dict():
+    pass
 
+def from_json():
+    pass
 
-class Config:
+def from_file():
+    pass
 
-    def from_dict(self):
-        pass
+def from_option():
+    pass
 
-    def from_json(self):
-        pass
-
-    def from_file(self):
-        pass
-
-    def from_option(self):
-        pass
-
-    def from_yaml(self):
-        pass
+def from_yaml():
+    pass
