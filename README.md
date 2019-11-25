@@ -4,13 +4,48 @@ Image transforms used in deep learning training.
 
 ## installation
 
-```
+```bash
 git clone https://git.vistel.cn/jie.wang/cvt.git
 cd cvt
 python setup.py develop
 ```
 
-## functions
+## usage
+
+cfg.json
+```json
+{
+    "sequence":{
+        "sample": {
+            "bright": {"scale": 0.1},
+            "contrast": {"scale": 0.1},
+            "hue": {"scale": 0.1}
+        },
+        "shuffle": {
+            "vflip": {},
+            "hflip": {},
+            "rotate": {"degrees": 30}
+        }
+    }
+}
+```
+
+
+```python
+import cvt
+import matplotlib.pyplot as plt
+
+tfms = cvt.from_file('cfg.json')
+img = cv.imread('image.jpg')[:,:,[2,1,0]]
+data = {'image':img}
+data = tfms(data)
+
+plt.imshow(data['image'])
+plt.show()
+```
+
+
+## modules
 
 - compose transforms
 1. Sequence
