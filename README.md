@@ -65,3 +65,12 @@ plt.show()
 3. RandomRotation
 4. Resize
 5. RandomResizedCrop
+
+- tensor
+1. ToTensor
+2. is_numpy
+3. is_pil
+4. is_tensor
+5. to_numpy
+6. to_pil
+7. to_tensor
