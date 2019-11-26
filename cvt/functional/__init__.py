@@ -85,3 +85,6 @@ def adjust_hue(img, scale):
 
 def adjust_gamma(img, gamma, gain):
     return call_by_name('adjust_gamma', img, gamma, gain)
+
+def perspective(img, startpoints, endpoints, interpolation):
+    return call_by_name('perspective', startpoints, endpoints, inter_code(interpolation, im_type(img)))

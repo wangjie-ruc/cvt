@@ -362,3 +362,47 @@ class RandomGamma(Transform):
 
     def apply_mask(self, mask, scale):
         return mask
+
+
+class RandomPerspective(object):
+    def __init__(self, distortion_scale=0.5, p=0.5, interpolation='bicubic'):
+        self.p = p
+        self.interpolation = interpolation
+        self.distortion_scale = distortion_scale
+
+    def __call__(self, data):
+        height, width = F.get_image_size(img)
+        startpoints, endpoints = self.get_params(width, height, self.distortion_scale)
+        for k,v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v, startpoints, endpoints)
+        return data
+
+    def apply_image(self, img, startpoints, endpoints):
+        return F.perspective(img, startpoints, endpoints, self.interpolation)
+
+    def apply_mask(self, mask, startpoints, endpoints):
+        distort = partial(F.perspective, startpoints, endpoints, self.interpolation)
+        if isinstance(mask, List):
+            return [distort(m) for m in mask]
+        return distort(mask)
+
+    @staticmethod
+    def get_params(width, height, distortion_scale):
+
+        half_height = int(height / 2)
+        half_width = int(width / 2)
+        topleft = (random.randint(0, int(distortion_scale * half_width)),
+                   random.randint(0, int(distortion_scale * half_height)))
+        topright = (random.randint(width - int(distortion_scale * half_width) - 1, width - 1),
+                    random.randint(0, int(distortion_scale * half_height)))
+        botright = (random.randint(width - int(distortion_scale * half_width) - 1, width - 1),
+                    random.randint(height - int(distortion_scale * half_height) - 1, height - 1))
+        botleft = (random.randint(0, int(distortion_scale * half_width)),
+                   random.randint(height - int(distortion_scale * half_height) - 1, height - 1))
+        startpoints = [(0, 0), (width - 1, 0), (width - 1, height - 1), (0, height - 1)]
+        endpoints = [topleft, topright, botright, botleft]
+        return startpoints, endpoints
+
+    def __repr__(self):
+        return self.__class__.__name__

@@ -83,3 +83,20 @@ def adjust_gamma(img, gamma, gain=1):
     img = img.point(gamma_map) 
     img = img.convert(input_mode)
     return img
+
+def _get_perspective_coeffs(startpoints, endpoints):
+    matrix = []
+
+    for p1, p2 in zip(endpoints, startpoints):
+        matrix.append([p1[0], p1[1], 1, 0, 0, 0, -p2[0] * p1[0], -p2[0] * p1[1]])
+        matrix.append([0, 0, 0, p1[0], p1[1], 1, -p2[1] * p1[0], -p2[1] * p1[1]])
+
+    A = torch.tensor(matrix, dtype=torch.float)
+    B = torch.tensor(startpoints, dtype=torch.float).view(8)
+    res = torch.lstsq(B, A)[0]
+    return res.squeeze_(1).tolist()
+
+
+def perspective(img, startpoints, endpoints, interpolation=Image.BICUBIC):
+    coeffs = _get_perspective_coeffs(startpoints, endpoints)
+    return img.transform(img.size, Image.PERSPECTIVE, coeffs, interpolation)

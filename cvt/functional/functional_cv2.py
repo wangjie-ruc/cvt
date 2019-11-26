@@ -156,7 +156,7 @@ def jpeg_quality(img, quality):
     return img
 
 
-def perspective(img, startpoint, endpoint, interpolation=cv.INTER_LINEAR):
-    M = cv.getPerspectiveTransform(startpoint, endpoint)
+def perspective(img, startpoints, endpoints, interpolation=cv.INTER_LINEAR):
+    M = cv.getPerspectiveTransform(startpoints, endpoints)
     img = cv.warpPerspective(img, M, img.shape[:2], interpolation)
     return img
