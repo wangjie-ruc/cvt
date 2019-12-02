@@ -5,7 +5,7 @@ import os
 from .transform import (RandomBright, RandomContrast, RandomGamma,
                        RandomHorizontalFlip, RandomHue, RandomResizedCrop,
                        RandomRotation, RandomSaturation, RandomVerticalFlip,
-                       Resize, Sample, Sequence, Shuffle, ToTensor)
+                       Resize, Sample, Sequence, Shuffle, ToTensor, LabelMap)
 
 tfms_map = {
     'bright': RandomBright,
@@ -21,7 +21,8 @@ tfms_map = {
     'sequence': Sequence,
     'shuffle':  Shuffle,
     'totensor':  ToTensor,
-    'sample': Sample
+    'sample': Sample,
+    'label_map': LabelMap
 }
 
 
