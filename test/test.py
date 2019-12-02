@@ -7,10 +7,9 @@ mask = cv.imread('test/assets/mask.png')
 
 data = {'image':img, 'mask':mask}
 
-from cvt.transform import RandomHorizontalFlip, RandomVerticalFlip, RandomRotation, RandomResizedCrop
-
-hflip = RandomResizedCrop(size=(320, 320))
-data = hflip(data)
+import cvt
+tfms = cvt.from_file('example/json_cfg2.json')
+data = tfms(data)
 plt.imshow(data['image'])
 plt.show()
 plt.imshow(data['mask'])

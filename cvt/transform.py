@@ -6,6 +6,9 @@ from collections import Iterable
 from functools import partial
 from typing import List
 
+import numpy as np
+import torch
+
 from . import functional as F
 
 
@@ -96,12 +99,12 @@ class ToTensor(Transform):
         return data
 
     def apply_image(self, img):
-        return F.to_tensor(img)
+        return torch.as_tensor(np.asarray(img), dtype=torch.int64)
 
     def apply_mask(self, mask):
         if isinstance(mask, List):
-            return torch.stach([F.to_tensor(m) for m in mask])
-        return F.to_tensor(mask)
+            return torch.stach([Ftorch.as_tensor(np.asarray(m), dtype=torch.int64) for m in mask])
+        return torch.as_tensor(np.asarray(mask), dtype=torch.int64)
 
 
 class RandomHorizontalFlip(Transform):

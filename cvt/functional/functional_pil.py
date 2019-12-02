@@ -1,5 +1,5 @@
 from PIL import Image, ImageOps, ImageEnhance
-
+import numpy as np
 
 def hflip(img):
     return img.transpose(Image.FLIP_LEFT_RIGHT)
