@@ -103,4 +103,5 @@ def perspective(img, startpoints, endpoints, interpolation=Image.BICUBIC):
 
 def label_map(img, tabel, value=0):
     img = img.point(lambda x: tabel.get(x, value))
+    return img
 
