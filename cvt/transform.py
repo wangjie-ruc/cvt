@@ -90,6 +90,9 @@ class Transform(metaclass=ABCMeta):
 
 class ToTensor(Transform):
     def __call__(self, data):
+        for k, v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v)
         return data
 
     def apply_image(self, img):

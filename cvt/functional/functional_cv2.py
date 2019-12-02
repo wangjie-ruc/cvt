@@ -33,7 +33,7 @@ def rotate(img, degree, interpolation=cv.INTER_LINEAR, expand=False, center=None
         w, h = int(h * sin + w * cos), int(h * cos + w * sin)
         M[0, 2] += w/2 - center[0]
         M[1, 2] += h/2 - center[1]
-    img = cv.warpAffine(img, M, (w, h), interpolation)
+    img = cv.warpAffine(img, M, (w, h), flags=interpolation)
     return img
 
 

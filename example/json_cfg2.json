@@ -4,5 +4,6 @@
     "hue": {"scale": 0.1},
     "vflip": {},
     "hflip": {},
-    "rotate": {"degrees": 30}
+    "rotate": {"degrees": 30},
+    "totensor": {}
 }
