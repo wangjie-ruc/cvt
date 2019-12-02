@@ -99,7 +99,7 @@ class ToTensor(Transform):
         return data
 
     def apply_image(self, img):
-        return torch.as_tensor(np.asarray(img), dtype=torch.int64)
+        return F.to_tensor(img)
 
     def apply_mask(self, mask):
         if isinstance(mask, List):
