@@ -160,3 +160,38 @@ def perspective(img, startpoints, endpoints, interpolation=cv.INTER_LINEAR):
     M = cv.getPerspectiveTransform(startpoints, endpoints)
     img = cv.warpPerspective(img, M, img.shape[:2], interpolation)
     return img
+
+
+def gaussian_noise(img, mean=0, var=0.01):
+    noise = np.random.randn(*img.shape) * np.sqrt(var) + mean
+    img = img * (1 + noise)
+    np.clip(img, 0, 255, img)
+    img = np.int8(img)
+    return img
+
+def poisson_noise(img, mean):
+    noise = np.random.poisson(lam=mean, size=img.shape)
+    np.sum(img, noise, out=img)
+    np.clip(img, 0, 255, out=img)
+    return np.uint8(img)
+
+
+def speckle_noise(img):
+    low = mean - np.sqrt(var)
+    high = mean+ np.sqrt(var)
+    J = np.random.uniform(low=low, high=high, size=size)
+    return img
+
+def imnoise(img, noise_type, mean=None, var=None, local_var=None, d=None):
+    assert noise_type in ['gaussian', 'localvar', 'poisson', 'speckle']
+    if noise_type == 'gaussian':
+        img = gaussian_noise(img)
+    elif noise_type == 'poisson':
+        img = poisson_noise(img)
+    elif  noise_type == 'speckle':
+        img = speckle_noise(img)
+
+
+    img  = img * (1 + J) * 255
+    np.clip(img, 0, 255, out=img)
+    return np.uint8(img)
