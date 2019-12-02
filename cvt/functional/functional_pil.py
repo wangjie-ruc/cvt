@@ -100,3 +100,7 @@ def _get_perspective_coeffs(startpoints, endpoints):
 def perspective(img, startpoints, endpoints, interpolation=Image.BICUBIC):
     coeffs = _get_perspective_coeffs(startpoints, endpoints)
     return img.transform(img.size, Image.PERSPECTIVE, coeffs, interpolation)
+
+def label_map(img, tabel, value=0):
+    img = img.point(lambda x: tabel.get(x, value))
+

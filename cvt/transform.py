@@ -103,8 +103,27 @@ class ToTensor(Transform):
 
     def apply_mask(self, mask):
         if isinstance(mask, List):
-            return torch.stach([Ftorch.as_tensor(np.asarray(m), dtype=torch.int64) for m in mask])
+            return torch.stack([torch.as_tensor(np.asarray(m), dtype=torch.int64) for m in mask])
         return torch.as_tensor(np.asarray(mask), dtype=torch.int64)
+
+
+class LabelMap(Transform):
+    def __init__(self, table):
+        self.label_map = table
+
+    def __call__(self, data):
+        for k, v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v)
+        return data
+    
+    def apply_image(self, img):
+        return img
+
+    def apply_mask(self, mask):
+        if isinstance(mask, List):
+            return mask
+        return F.label_map(mask)
 
 
 class RandomHorizontalFlip(Transform):

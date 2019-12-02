@@ -88,3 +88,9 @@ def adjust_gamma(img, gamma, gain):
 
 def perspective(img, startpoints, endpoints, interpolation):
     return call_by_name('perspective', startpoints, endpoints, inter_code(interpolation, im_type(img)))
+
+def label_map(img, table):
+    return call_by_name('label_map', img, table)
+
+
+

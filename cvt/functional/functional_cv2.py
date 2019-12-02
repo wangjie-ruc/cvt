@@ -195,3 +195,9 @@ def imnoise(img, noise_type, mean=None, var=None, local_var=None, d=None):
     img  = img * (1 + J) * 255
     np.clip(img, 0, 255, out=img)
     return np.uint8(img)
+
+
+def label_map(img, table, value=0):
+    table = np.uint8([table.get(x, value) for x in range(256)])
+    cv.LUT(img, table, img)
+    return img
