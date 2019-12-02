@@ -58,7 +58,6 @@ def to_tensor(pic):
     img = img.view(pic.size[1], pic.size[0], nchannel)
     img = img.transpose(0, 1).transpose(0, 2).contiguous()
     if isinstance(img, torch.ByteTensor):
-        print('255 div')
         return img.float().div(255)
     else:
         return img
