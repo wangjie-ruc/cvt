@@ -14,7 +14,7 @@ setup(
     author='jie.wang',
     author_email='jie.wang@ruc.edu.cn',
     description='Image Transformation Package',
-    url='https://git.vistel.cn/jie.wang/cvt',
+    url='https://github.com/wangjie-ruc/cvt',
     license='BSD',
     install_requires=install_requires
 )
