@@ -92,5 +92,6 @@ def perspective(img, startpoints, endpoints, interpolation):
 def label_map(img, table):
     return call_by_name('label_map', img, table)
 
-
+def normalize(tensor, mean, std):
+    return F_tensor.normalize(tensor, mean, std)
 

@@ -107,6 +107,24 @@ class ToTensor(Transform):
         return torch.as_tensor(np.asarray(mask), dtype=torch.int64)
 
 
+class Normalize(Transform):
+    def __init__(self, mean, std):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, data):
+        for k, v in data.items():
+            if v is not None:
+                data[k] = getattr(self, f'apply_{k}')(v)
+        return data
+    
+    def apply_image(self, img):
+        return F.normalize(img, mean, std)
+
+    def apply_mask(self, mask):
+        return mask
+
+
 class LabelMap(Transform):
     def __init__(self, table):
         self.label_map = table
