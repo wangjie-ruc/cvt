@@ -9,7 +9,7 @@ install_requires=[
 
 setup(
     name='cvt',
-    version='0.0.1',
+    version='0.0.2',
     packages=find_packages(exclude=('test',)),
     author='jie.wang',
     author_email='jie.wang@ruc.edu.cn',

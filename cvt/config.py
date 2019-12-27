@@ -2,10 +2,11 @@ import collections
 import json
 import os
 
-from .transform import (RandomBright, RandomContrast, RandomGamma,
-                       RandomHorizontalFlip, RandomHue, RandomResizedCrop,
-                       RandomRotation, RandomSaturation, RandomVerticalFlip,
-                       Resize, Sample, Sequence, Shuffle, ToTensor, LabelMap)
+from .transform import (LabelMap, Normalize, RandomBright, RandomContrast,
+                        RandomGamma, RandomHorizontalFlip, RandomHue,
+                        RandomResizedCrop, RandomRotation, RandomSaturation,
+                        RandomVerticalFlip, Resize, Sample, Sequence, Shuffle,
+                        ToTensor)
 
 tfms_map = {
     'bright': RandomBright,
@@ -22,7 +23,8 @@ tfms_map = {
     'shuffle':  Shuffle,
     'totensor':  ToTensor,
     'sample': Sample,
-    'label_map': LabelMap
+    'label_map': LabelMap,
+    'normalize': Normalize,
 }
 
 

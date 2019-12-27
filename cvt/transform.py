@@ -93,9 +93,12 @@ class Transform(metaclass=ABCMeta):
 
 class ToTensor(Transform):
     def __call__(self, data):
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v)
+        else:
+            data = self.apply_image(data)
         return data
 
     def apply_image(self, img):
@@ -113,13 +116,16 @@ class Normalize(Transform):
         self.std = std
 
     def __call__(self, data):
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v)
+        else:
+            data = self.apply_image(data)
         return data
     
     def apply_image(self, img):
-        return F.normalize(img, mean, std)
+        return F.normalize(img, self.mean, self.std)
 
     def apply_mask(self, mask):
         return mask
@@ -127,12 +133,16 @@ class Normalize(Transform):
 
 class LabelMap(Transform):
     def __init__(self, table):
+        table = {int(k):int(v) for k,v in table.items()}
         self.label_map = table
 
     def __call__(self, data):
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v)
+        else:
+            data = self.apply_image(data)
         return data
     
     def apply_image(self, img):
@@ -141,7 +151,7 @@ class LabelMap(Transform):
     def apply_mask(self, mask):
         if isinstance(mask, List):
             return mask
-        return F.label_map(mask)
+        return F.label_map(mask, self.label_map)
 
 
 class RandomHorizontalFlip(Transform):
@@ -150,9 +160,12 @@ class RandomHorizontalFlip(Transform):
 
     def __call__(self, data):
         if random.random() < self.p:
-            for k, v in data.items():
-                if v is not None:
-                    data[k] = getattr(self, f'apply_{k}')(v)
+            if isinstance(data, dict):
+                for k, v in data.items():
+                    if v is not None:
+                        data[k] = getattr(self, f'apply_{k}')(v)
+            else:
+                data = self.apply_image(data)
         return data
 
     def apply_image(self, img):
@@ -170,9 +183,12 @@ class RandomVerticalFlip(Transform):
 
     def __call__(self, data):
         if random.random() < self.p:
-            for k, v in data.items():
-                if v is not None:
-                    data[k] = getattr(self, f'apply_{k}')(v)
+            if isinstance(data, dict):
+                for k, v in data.items():
+                    if v is not None:
+                        data[k] = getattr(self, f'apply_{k}')(v)
+            else:
+                data = self.apply_image(data)
         return data
 
     def apply_image(self, img):
@@ -204,9 +220,12 @@ class RandomRotation(Transform):
 
     def __call__(self, data):
         degree = self.get_params(self.degrees)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, degree)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, degree)
+        else:
+            data = self.apply_image(data, degree)
         return data
 
     @staticmethod
@@ -233,9 +252,12 @@ class Resize(Transform):
         self.interpolation = interpolation
 
     def __call__(self, data):
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v)
+        else:
+            data = self.apply_image(data)
         return data
 
     def apply_image(self, img):
@@ -256,10 +278,14 @@ class RandomResizedCrop(Transform):
         self.interpolation = interpolation
 
     def __call__(self, data):
-        params = self.get_params(data['image'], self.scale, self.ratio)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, *params)
+        if isinstance(data, dict):
+            params = self.get_params(data['image'], self.scale, self.ratio)
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, *params)
+        else:
+            params = self.get_params(data, self.scale, self.ratio)
+            data = self.apply_image(data, *params)
         return data
 
     @staticmethod
@@ -313,9 +339,12 @@ class RandomBright(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, scale)
+        else:
+            data = self.apply_image(data, scale)
         return data
 
     def apply_image(self, img, scale):
@@ -333,9 +362,12 @@ class RandomContrast(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, scale)
+        else:
+            data = self.apply_image(data, scale)
         return data
 
     def apply_image(self, img, scale):
@@ -353,9 +385,12 @@ class RandomSaturation(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, scale)
+        else:
+            data = self.apply_image(data, scale)
         return data
 
     def apply_image(self, img, scale):
@@ -374,9 +409,12 @@ class RandomHue(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, scale)
+        else:
+            data = self.apply_image(data, scale)
         return data
 
     def apply_image(self, img, scale):
@@ -395,9 +433,12 @@ class RandomGamma(Transform):
 
     def __call__(self, data):
         scale = random.uniform(*self.scale)
-        for k, v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, scale)
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, scale)
+        else:
+            data = self.apply_image(data, scale)
         return data
 
     def apply_image(self, img, scale):
@@ -414,11 +455,16 @@ class RandomPerspective(object):
         self.distortion_scale = distortion_scale
 
     def __call__(self, data):
-        height, width = F.get_image_size(img)
-        startpoints, endpoints = self.get_params(width, height, self.distortion_scale)
-        for k,v in data.items():
-            if v is not None:
-                data[k] = getattr(self, f'apply_{k}')(v, startpoints, endpoints)
+        if isinstance(data, dict):
+            height, width = F.get_image_size(data['image'])
+            startpoints, endpoints = self.get_params(width, height, self.distortion_scale)
+            for k,v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, startpoints, endpoints)
+        else:
+            height, width = F.get_image_size(data)
+            startpoints, endpoints = self.get_params(width, height, self.distortion_scale)
+            data = self.apply_image(data, startpoints, endpoints)
         return data
 
     def apply_image(self, img, startpoints, endpoints):

@@ -1,5 +1,6 @@
 {
     "sequence":{
+        "resize":{"size": [512, 512]},
         "sample": {
             "bright": {"scale": 0.1},
             "contrast": {"scale": 0.1},

@@ -4,13 +4,30 @@ Image transforms used in deep learning training.
 
 ## installation
 
+```
+pip install cvt
+```
+
 ```bash
-git clone https://git.vistel.cn/jie.wang/cvt.git
+git clone git@github.com:wangjie-ruc/cvt.git
 cd cvt
-python setup.py develop
+python setup.py install
 ```
 
 ## usage
+
+Please Refer to test folder.
+
+Data should be put in a dict before transformed. 'image' for image data, 'mask' for pixel-wise annotation, for multi-label segmentation, mask are organised in a list. keypoint and bounding box are under developing. 
+
+We can transform a single image directly without putting it in a dict.
+
+```python
+img = cv.imread("")
+mask = cv.imread("")
+data = {'image':img, 'mask':mask}
+```
+
 
 cfg.json
 ```json

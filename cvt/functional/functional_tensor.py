@@ -6,7 +6,7 @@ def vflip(img):
 def hflip(img):
     return img.flip(-1)
 
-def  normalize(tensor, mean, std):
+def normalize(tensor, mean, std):
     dtype = tensor.dtype
     mean = torch.as_tensor(mean, dtype=dtype, device=tensor.device)
     std = torch.as_tensor(std, dtype=dtype, device=tensor.device)
