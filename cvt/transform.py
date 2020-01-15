@@ -153,6 +153,12 @@ class LabelMap(Transform):
             return mask
         return F.label_map(mask, self.label_map)
 
+class Identity(Transform):
+    def __call__(self, data):
+        return data
+
+    def apply_image(self, img):
+        return img
 
 class RandomHorizontalFlip(Transform):
     def __init__(self, p=0.5):
@@ -442,7 +448,7 @@ class RandomGamma(Transform):
         return data
 
     def apply_image(self, img, scale):
-        return F.adjust_brightness(img, scale, self.gain)
+        return F.adjust_gamma(img, scale, self.gain)
 
     def apply_mask(self, mask, scale):
         return mask

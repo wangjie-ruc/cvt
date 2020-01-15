@@ -6,23 +6,28 @@ from .transform import (LabelMap, Normalize, RandomBright, RandomContrast,
                         RandomGamma, RandomHorizontalFlip, RandomHue,
                         RandomResizedCrop, RandomRotation, RandomSaturation,
                         RandomVerticalFlip, Resize, Sample, Sequence, Shuffle,
-                        ToTensor)
+                        ToTensor, Identity)
 
 tfms_map = {
+    'identity': Identity,
+    
     'bright': RandomBright,
     'contrast': RandomContrast,
     'gamma': RandomGamma,
+    'saturation': RandomSaturation,
+    'hue': RandomHue,
+
     'hflip': RandomHorizontalFlip,
     'vflip': RandomVerticalFlip,
-    'hue': RandomHue,
     'resized_crop': RandomResizedCrop,
     'resize': Resize,
-    'saturation': RandomSaturation,
     'rotate': RandomRotation,
+
     'sequence': Sequence,
     'shuffle':  Shuffle,
-    'totensor':  ToTensor,
     'sample': Sample,
+
+    'totensor':  ToTensor,
     'label_map': LabelMap,
     'normalize': Normalize,
 }
