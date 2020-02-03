@@ -1,8 +1,9 @@
+import json
 import math
 import numbers
 import random
 from abc import ABCMeta, abstractmethod
-from collections import Iterable
+from collections import Iterable, OrderedDict
 from functools import partial
 from typing import List
 
@@ -31,6 +32,12 @@ class Sequence:
         format_string += '\n)'
         return format_string
 
+    def to_dict(self):
+        return OrderedDict([("sequence", OrderedDict([t.to_dict().popitem() for t in self.transforms]))])
+
+    def to_json(self, indent=4):
+        return json.dumps(self.to_dict(), indent=indent)
+
 class Shuffle:
     def __init__(self, transforms):
         if not isinstance(transforms, List):
@@ -50,6 +57,12 @@ class Shuffle:
             format_string += '    {0}'.format(t)
         format_string += '\n)'
         return format_string
+
+    def to_dict(self):
+        return OrderedDict([("shuffle", OrderedDict([t.to_dict().popitem() for t in self.transforms]))])
+
+    def to_json(self, indent=4):
+        return json.dumps(self.to_dict(), indent=indent)
 
 class Sample:
     def __init__(self, transforms, k=1):
@@ -73,6 +86,12 @@ class Sample:
         format_string += '\n)'
         return format_string
 
+    def to_dict(self):
+        return OrderedDict([("sample", OrderedDict([t.to_dict().popitem() for t in self.transforms]))])
+
+    def to_json(self, indent=4):
+        return json.dumps(self.to_dict(), indent=indent)
+
 class Transform(metaclass=ABCMeta):
     @abstractmethod
     def apply_image(self, img):
@@ -90,6 +109,10 @@ class Transform(metaclass=ABCMeta):
     def __repr__(self):
         format_string = self.__class__.__name__
         return format_string
+
+    @abstractmethod
+    def to_dict(self):
+        pass
 
 class ToTensor(Transform):
     def __call__(self, data):
@@ -109,6 +132,8 @@ class ToTensor(Transform):
             return torch.stack([torch.as_tensor(np.asarray(m), dtype=torch.int64) for m in mask])
         return torch.as_tensor(np.asarray(mask), dtype=torch.int64)
 
+    def to_dict(self):
+        return OrderedDict([("totensor", {})])
 
 class Normalize(Transform):
     def __init__(self, mean, std):
@@ -130,6 +155,8 @@ class Normalize(Transform):
     def apply_mask(self, mask):
         return mask
 
+    def to_dict(self):
+        return OrderedDict([("normalize", {"mean": list(self.mean), "std": list(self.std)})])
 
 class LabelMap(Transform):
     def __init__(self, table):
@@ -153,12 +180,18 @@ class LabelMap(Transform):
             return mask
         return F.label_map(mask, self.label_map)
 
+    def to_dict(self):
+        return OrderedDict([("labem_map", {"table": self.label_map})])
+
 class Identity(Transform):
     def __call__(self, data):
         return data
 
     def apply_image(self, img):
         return img
+
+    def to_dict(self):
+        return OrderedDict([("identity", {})])
 
 class RandomHorizontalFlip(Transform):
     def __init__(self, p=0.5):
@@ -182,6 +215,9 @@ class RandomHorizontalFlip(Transform):
             return [F.hflip(m) for m in mask]
         return F.hflip(mask)
 
+    def to_dict(self):
+        return OrderedDict([('hflip', {'p': self.p})])
+
 
 class RandomVerticalFlip(Transform):
     def __init__(self, p=0.5):
@@ -204,6 +240,9 @@ class RandomVerticalFlip(Transform):
         if isinstance(mask, List):
             return [F.vflip(m) for m in mask]
         return F.vflip(mask)
+
+    def to_dict(self):
+        return OrderedDict([('vflip', {'p': self.p})])
 
 
 class RandomRotation(Transform):
@@ -249,6 +288,15 @@ class RandomRotation(Transform):
             return [rotate(m) for m in mask]
         return rotate(mask)
 
+    def to_dict(self):
+        return OrderedDict([('rotate', {
+            'degrees': self.degrees,
+            'interpolation': self.interpolation,
+            'expand': self.expand,
+            'center': self.center,
+            'fill': self.fill
+        })])
+
 
 class Resize(Transform):
     def __init__(self, size, interpolation='bilinear'):
@@ -275,6 +323,8 @@ class Resize(Transform):
             return [resize(m) for m in mask]
         return resize(mask)
 
+    def to_dict(self):
+        return OrderedDict([('resize', {'size': self.size, 'interpolation': self.interpolation})])
 
 
 class RandomCrop(Transform):
@@ -322,6 +372,9 @@ class RandomCrop(Transform):
         if isinstance(mask, List):
             return [F.crop(m, i, j, h, w) for m in mask]
         return F.crop(mask, i, j, h, w)
+
+    def to_dict(self):
+        return OrderedDict([('crop', {'size': self.size})])
 
 class RandomResizedCrop(Transform):
     def __init__(self, size, scale=(0.08, 1.0), ratio=(3. / 4., 4. / 3.), interpolation='bilinear'):
@@ -383,6 +436,13 @@ class RandomResizedCrop(Transform):
             return [F.resized_crop(m, i, j, h, w, self.size, 'nearest') for m in mask]
         return F.resized_crop(mask, i, j, h, w, self.size, 'nearest')
 
+    def to_dict(self):
+        return OrderedDict([('resized_crop', {
+            'size': self.size,
+            'scale': self.scale,
+            'ratio': self.ratio,
+            'interpolation': self.interpolation
+        })])
 
 class RandomBright(Transform):
     def __init__(self, scale):
@@ -406,6 +466,8 @@ class RandomBright(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+    def to_dict(self):
+        return OrderedDict([('bright', {'scale': self.scale})])
 
 class RandomContrast(Transform):
     def __init__(self, scale):
@@ -429,6 +491,9 @@ class RandomContrast(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+    def to_dict(self):
+        return OrderedDict([('contrast', {'scale': self.scale})])
+
 
 class RandomSaturation(Transform):
     def __init__(self, scale):
@@ -451,6 +516,9 @@ class RandomSaturation(Transform):
 
     def apply_mask(self, mask, scale):
         return mask
+
+    def to_dict(self):
+        return OrderedDict([('saturation', {'scale': self.scale})])
 
 
 class RandomHue(Transform):
@@ -476,6 +544,9 @@ class RandomHue(Transform):
     def apply_mask(self, mask, scale):
         return mask
 
+    def to_dict(self):
+        return OrderedDict([('hue', {'scale': self.scale})])
+
 
 class RandomGamma(Transform):
     def __init__(self, scale, gain=1):
@@ -499,6 +570,9 @@ class RandomGamma(Transform):
 
     def apply_mask(self, mask, scale):
         return mask
+
+    def to_dict(self):
+        return OrderedDict([('gamma', {'scale': self.scale})])
 
 
 class RandomPerspective(object):
@@ -548,3 +622,10 @@ class RandomPerspective(object):
 
     def __repr__(self):
         return self.__class__.__name__
+
+    def to_dict(self):
+        return OrderedDict([('perspective', {
+            'distortion_scale': self.distortion_scale,
+            'p': self.p,
+            'interpolation': self.interpolation
+        })])

@@ -61,6 +61,65 @@ plt.imshow(data['image'])
 plt.show()
 ```
 
+generate json config from python code
+```python
+
+from cvt.transform import (RandomBright, RandomContrast, RandomHorizontalFlip,
+                           RandomHue, RandomRotation, RandomVerticalFlip,
+                           Sample, Sequence, Shuffle)
+
+tfms = Sequence([
+    Sample([RandomBright(0.2), RandomContrast(0.2), RandomHue(0.2)]),
+    Shuffle([RandomHorizontalFlip(), RandomVerticalFlip(), RandomRotation(30)])
+])
+
+print(tfms.to_json())
+''' expected output
+{
+    "sequence": {
+        "sample": {
+            "bright": {
+                "scale": [
+                    0.8,
+                    1.2
+                ]
+            },
+            "contrast": {
+                "scale": [
+                    0.8,
+                    1.2
+                ]
+            },
+            "hue": {
+                "scale": [
+                    -0.2,
+                    0.2
+                ]
+            }
+        },
+        "shuffle": {
+            "hflip": {
+                "p": 0.5
+            },
+            "vflip": {
+                "p": 0.5
+            },
+            "rotate": {
+                "degrees": [
+                    -30,
+                    30
+                ],
+                "interpolation": "nearest",
+                "expand": false,
+                "center": null,
+                "fill": 0
+            }
+        }
+    }
+}
+'''
+```
+
 
 ## modules
 
