@@ -8,7 +8,7 @@ tfms = Sequence([
 ])
 
 import cv2 as cv 
-img = cv.imread('test/assets/001.jpg')[:,:,[2,1,0]]
+img = cv.imread('test/assets/image.jpg')[:,:,[2,1,0]]
 data = {'image':img}
 data = tfms(data)
 import matplotlib.pyplot as plt
