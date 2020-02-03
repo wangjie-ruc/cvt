@@ -66,6 +66,8 @@ def rotate(img, degree, interpolation='bilinear', expand=False, center=None):
 def resize(img, size, interpolation):
     return call_by_name('resize', img, size=size, interpolation=inter_code(interpolation, im_type(img)))
 
+def crop(img, i, j, h, w):
+    return call_by_name('crop', img, i=i, j=j, h=h, w=w)
 
 def resized_crop(img, i, j, h, w, size, interpolation):
     return call_by_name('resized_crop', img, i, j, h, w, size, inter_code(interpolation, im_type(img)))

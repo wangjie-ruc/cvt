@@ -276,6 +276,51 @@ class Resize(Transform):
         return resize(mask)
 
 
+
+class RandomCrop(Transform):
+    def __init__(self, size):
+        if isinstance(size, numbers.Number):
+            self.size = (int(size), int(size))
+        else:
+            self.size = size
+    
+    @staticmethod
+    def get_params(img, output_size):
+        """Get parameters for ``crop`` for a random crop.
+
+        Args:
+            img (PIL Image): Image to be cropped.
+            output_size (tuple): Expected output size of the crop.
+
+        Returns:
+            tuple: params (i, j, h, w) to be passed to ``crop`` for random crop.
+        """
+        w, h = F.get_image_size(img)
+        th, tw = output_size
+        if w == tw and h == th:
+            return 0, 0, h, w
+
+        i = random.randint(0, h - th)
+        j = random.randint(0, w - tw)
+        return i, j, th, tw
+    
+    def __call__(self):
+        if isinstance(data, dict):
+            params = self.get_params(data['image'], self.size)
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, *params)
+        else:
+            params = self.get_params(data, self.size)
+            data = self.apply_image(data, *params)
+        return data
+
+    def apply_image(self, img, i, j, h, w):
+        return F.crop(img, i, j, h, w)
+
+    def  apply_mask(self, mask, i, j, h, w):
+        return F.crop(mask, i, j, h, w)
+
 class RandomResizedCrop(Transform):
     def __init__(self, size, scale=(0.08, 1.0), ratio=(3. / 4., 4. / 3.), interpolation='bilinear'):
         self.size = size
