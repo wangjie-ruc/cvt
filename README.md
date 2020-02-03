@@ -82,6 +82,7 @@ plt.show()
 3. RandomRotation
 4. Resize
 5. RandomResizedCrop
+6. RandomCrop
 
 - tensor
 1. ToTensor

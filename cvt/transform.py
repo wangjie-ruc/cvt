@@ -304,7 +304,7 @@ class RandomCrop(Transform):
         j = random.randint(0, w - tw)
         return i, j, th, tw
     
-    def __call__(self):
+    def __call__(self, data):
         if isinstance(data, dict):
             params = self.get_params(data['image'], self.size)
             for k, v in data.items():
@@ -319,6 +319,8 @@ class RandomCrop(Transform):
         return F.crop(img, i, j, h, w)
 
     def  apply_mask(self, mask, i, j, h, w):
+        if isinstance(mask, List):
+            return [F.crop(m, i, j, h, w) for m in mask]
         return F.crop(mask, i, j, h, w)
 
 class RandomResizedCrop(Transform):
