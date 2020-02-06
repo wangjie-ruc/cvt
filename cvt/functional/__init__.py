@@ -72,6 +72,8 @@ def crop(img, i, j, h, w):
 def resized_crop(img, i, j, h, w, size, interpolation):
     return call_by_name('resized_crop', img, i, j, h, w, size, inter_code(interpolation, im_type(img)))
 
+def pad(img, padding, fill,  padding_mode):
+    return call_by_name('pad', img, padding, fill, padding_mode)
 
 def adjust_brightness(img, scale):
     return call_by_name('adjust_brightness', img, scale)

@@ -46,22 +46,6 @@ def pad(img, padding, fill=0, padding_mode='constant'):
     Returns:
         PIL Image: Padded image.
     """
-    if not _is_pil_image(img):
-        raise TypeError('img should be PIL Image. Got {}'.format(type(img)))
-
-    if not isinstance(padding, (numbers.Number, tuple)):
-        raise TypeError('Got inappropriate padding arg')
-    if not isinstance(fill, (numbers.Number, str, tuple)):
-        raise TypeError('Got inappropriate fill arg')
-    if not isinstance(padding_mode, str):
-        raise TypeError('Got inappropriate padding_mode arg')
-
-    if isinstance(padding, Sequence) and len(padding) not in [2, 4]:
-        raise ValueError("Padding must be an int or a 2, or 4 element tuple, not a " +
-                         "{} element tuple".format(len(padding)))
-
-    assert padding_mode in ['constant', 'edge', 'reflect', 'symmetric'], \
-        'Padding mode should be either constant, edge, reflect or symmetric'
 
     if padding_mode == 'constant':
         if img.mode == 'P':

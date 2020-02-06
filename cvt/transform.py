@@ -444,6 +444,41 @@ class RandomResizedCrop(Transform):
             'interpolation': self.interpolation
         })])
 
+
+class Pad(Transform):
+    def __init__(self, padding, fill=0, padding_mode='constant'):
+        assert isinstance(padding, (numbers.Number, tuple))
+        assert isinstance(fill, (numbers.Number, str, tuple))
+        assert padding_mode in ['constant', 'edge', 'reflect', 'symmetric']
+        if isinstance(padding, Sequence) and len(padding) not in [2, 4]:
+            raise ValueError("Padding must be an int or a 2, or 4 element tuple, not a " +
+                             "{} element tuple".format(len(padding)))
+
+        self.padding = padding
+        self.fill = fill
+        self.padding_mode = padding_mode
+
+    def __call__(self, data):
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if v is not None:
+                    data[k] = getattr(self, f'apply_{k}')(v, self.padding, self.fill, self.padding_mode)
+        else:
+            data = self.apply_image(data, self.padding, self.fill, self.padding_mode)
+        return data
+
+    def apply_image(self, img, padding, fill, padding_mode):
+        return F.pad(img, padding, fill, padding_mode)
+
+    def apply_mask(self, mask, padding, fill, padding_mode):
+        if isinstance(mask, List):
+            return [F.pad(m, padding, fill, padding_mode) for m in mask]
+        return F.pad(mask, padding, fill, padding_mode)
+    
+    def to_dict(self):
+        return OrderedDict([('pad', {'padding': self.padding, 'fill':self.fill,  'padding_mode':self.padding_mode})])
+
+
 class RandomBright(Transform):
     def __init__(self, scale):
         if isinstance(scale, numbers.Number):

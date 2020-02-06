@@ -142,6 +142,7 @@ print(tfms.to_json())
 4. Resize
 5. RandomResizedCrop
 6. RandomCrop
+7. Pad
 
 - tensor
 1. ToTensor
