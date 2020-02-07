@@ -2,7 +2,7 @@ import collections
 import json
 import os
 
-from .transform import (Identity, LabelMap, Normalize, RandomBright,
+from .transform import (Identity, LabelMap, Normalize, Pad, RandomBright,
                         RandomContrast, RandomCrop, RandomGamma,
                         RandomHorizontalFlip, RandomHue, RandomResizedCrop,
                         RandomRotation, RandomSaturation, RandomVerticalFlip,
@@ -23,6 +23,7 @@ tfms_map = {
     'resize': Resize,
     'rotate': RandomRotation,
     'crop': RandomCrop,
+    'pad': Pad,
 
     'sequence': Sequence,
     'shuffle':  Shuffle,
