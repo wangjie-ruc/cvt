@@ -664,3 +664,30 @@ class RandomPerspective(object):
             'p': self.p,
             'interpolation': self.interpolation
         })])
+
+
+
+class RandomCLAHE(Transform):
+    def __init__(self, p=0.5, clip_limit=None, tile_grid_size=None):
+        self.clip_limit = clip_limit
+        self.tile_grid_size = tile_grid_size
+        self.p = p
+
+    def __call__(self, data):
+        if random.random() < self.p:
+            if isinstance(data, dict):
+                for k, v in data.items():
+                    if v is not None:
+                        data[k] = getattr(self, f'apply_{k}')(v)
+            else:
+                data = self.apply_image(data)
+        return data
+
+    def apply_image(self, img):
+        return F.clahe(img, self.clip_limit, self.tile_grid_size)
+
+    def apply_mask(self, mask):
+        return mask
+
+    def to_dict(self):
+        return OrderedDict([('clahe', {'size': self.size, 'interpolation': self.interpolation})])

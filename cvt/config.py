@@ -3,7 +3,7 @@ import json
 import os
 
 from .transform import (Identity, LabelMap, Normalize, Pad, RandomBright,
-                        RandomContrast, RandomCrop, RandomGamma,
+                        RandomCLAHE, RandomContrast, RandomCrop, RandomGamma,
                         RandomHorizontalFlip, RandomHue, RandomResizedCrop,
                         RandomRotation, RandomSaturation, RandomVerticalFlip,
                         Resize, Sample, Sequence, Shuffle, ToTensor)
@@ -16,6 +16,7 @@ tfms_map = {
     'gamma': RandomGamma,
     'saturation': RandomSaturation,
     'hue': RandomHue,
+    'clahe': RandomCLAHE,
 
     'hflip': RandomHorizontalFlip,
     'vflip': RandomVerticalFlip,

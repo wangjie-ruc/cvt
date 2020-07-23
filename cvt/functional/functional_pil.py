@@ -1,5 +1,7 @@
 from PIL import Image, ImageOps, ImageEnhance
 import numpy as np
+from .tensor import to_numpy, to_pil
+from .functional_cv2 import clahe as clahe_cv2
 
 def hflip(img):
     return img.transpose(Image.FLIP_LEFT_RIGHT)
@@ -179,3 +181,10 @@ def label_map(img, tabel, value=0):
     img = img.point(lambda x: tabel.get(x, value))
     return img
 
+
+
+def clahe(img, clip_limit=2, tile_grid_size=(10, 10)):
+    img = to_numpy(img)
+    img = clahe_cv2(img, clip_limit, tile_grid_size)
+    img = to_pil(img)
+    return img

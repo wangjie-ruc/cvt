@@ -99,3 +99,5 @@ def label_map(img, table):
 def normalize(tensor, mean, std):
     return F_tensor.normalize(tensor, mean, std)
 
+def clahe(img, clip_limit, tile_grid_size):
+    return call_by_name('clahe', img, clip_limit, tile_grid_size)
