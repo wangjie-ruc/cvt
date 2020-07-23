@@ -129,8 +129,8 @@ class ToTensor(Transform):
 
     def apply_mask(self, mask):
         if isinstance(mask, List):
-            return torch.stack([torch.as_tensor(np.asarray(m), dtype=torch.int64) for m in mask])
-        return torch.as_tensor(np.asarray(mask), dtype=torch.int64)
+            return torch.stack([torch.as_tensor(np.array(m), dtype=torch.int64) for m in mask])
+        return torch.as_tensor(np.array(mask), dtype=torch.int64)
 
     def to_dict(self):
         return OrderedDict([("totensor", {})])

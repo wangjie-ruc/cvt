@@ -136,7 +136,7 @@ def is_gray(img):
 
 
 def clahe(img, clip_limit=2, tile_grid_size=(10, 10)):
-    clahe = cv.createCLAHE(clip_limit, tile_grid_size)
+    clahe = cv.createCLAHE(clip_limit, tuple(tile_grid_size))
     if is_gray(img):
         if img.ndim == 2 or img.shape[-1] == 1:
             img = clahe.apply(img)
